@@ -1,6 +1,7 @@
 import streamlit as st
 from sklearn.feature_extraction.text import TfidfVectorizer
 from sklearn.metrics.pairwise import cosine_similarity
+from PyPDF2 import PdfReader
 import re
 
 # ------------------------
@@ -13,6 +14,16 @@ SKILLS = [
 # ------------------------
 # FUNCTIONS
 # ------------------------
+
+def extract_text_from_pdf(file):
+    reader = PdfReader(file)
+    text = ""
+
+    for page in reader.pages:
+        text += page.extract_text() + "\n"
+
+    return text
+
 def clean_text(text):
     text = text.lower()
     text = re.sub(r'\W+', ' ', text)
@@ -86,8 +97,15 @@ def generate_suggestions(missing):
 st.set_page_config(page_title="Resume Analyzer")
 
 st.title("📄 AI Resume Analyzer")
+st.caption("Upload your resume and compare it with a job description to get insights.")
 
-resume = st.text_area("Paste your Resume here:")
+uploaded_file = st.file_uploader("Upload Resume (PDF)", type=["pdf"])
+
+resume = ""
+
+if uploaded_file is not None:
+    resume = extract_text_from_pdf(uploaded_file)
+
 job_desc = st.text_area("Paste Job Description here:")
 
 if st.button("Analyze"):
@@ -102,6 +120,9 @@ if st.button("Analyze"):
 
         st.subheader("📊 Match Score")
         st.write(round(score, 2))
+
+        st.subheader("🧠 Detected Resume Skills")
+        st.write(extract_skills(resume))
 
         st.subheader("❌ Missing Skills")
         st.write(missing if missing else "None")
