@@ -13,15 +13,20 @@ def get_sentiment(text):
     return analyzer.polarity_scores(text)['compound']
 
 # Sample documents
-documents =  [
-    "I love my country",
-    "I love India",
-    "I am an Indian",
-    "I am a citizen of India",
-    "I am a citizen of USA",
-    "I am a citizen of China"
-]
+# documents =  [
+#     "I love my country",
+#     "I love India",
+#     "I am an Indian",
+#     "I am a citizen of India",
+#     "I am a citizen of USA",
+#     "I am a citizen of China"
+# ]
 
+documents = [
+    "I love machine learning and natural language processing.",
+    "I enjoy deep learning and data science.",
+    "I am passionate about artificial intelligence and big data."
+]
 # Create the TF-IDF vectorizer
 vectorizer = TfidfVectorizer(stop_words='english') #stop_words = 'english' -> remove common words
 
